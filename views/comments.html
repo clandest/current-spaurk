@@ -1,0 +1,191 @@
+
+{% extends "template.html" %}
+
+{% block message %}{{ messages }}{% endblock %}
+
+{% block main %}
+<form name="commentForm" id="commentForm" action="/p/clandest/comments" method="POST">
+	<div class="new-comment">
+			<textarea name="newComment" id="new-comment" form="commentForm"></textarea>
+		<div class="commentMenu">
+			<input type="submit" id="submit-btn" value="Post Comment">
+		</div>
+	</div>
+</form>
+<div class="comments" id="comments">
+<ul id="commentsList">
+	<li>
+		<div class="comment">
+			<div class="profileImage"></div>
+			<p>This is a comment. I wonder if it cant have replies</p>
+			<div class="commentMenu">
+				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn">[Reply]</a><a href="">[Report]</a>
+			</div>
+		</div>
+		<ul class="replies">
+			<li>
+			<div class="reply">
+				<div class="profileImage"></div>
+				<p>This is a reply to a comment. I wonder if it will work</p>
+				<div class="commentMenu">
+					<a href="">[Report]</a>
+				</div>
+			</div>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<div class="comment">
+			<div class="profileImage"></div>
+			<p>This is a comment. I wonder if it cant have replies</p>
+			<div class="commentMenu">
+				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn">[Reply]</a><a href="">[Report]</a>
+			</div>
+		</div>
+	</li>
+</ul>
+</div>
+<div class="clear"></div>
+<script>
+	var comments = document.getElementById('commentsList');
+	var commentForm = document.getElementById('commentForm');
+	var newComment = document.getElementById('new-comment');
+
+	commentForm.addEventListener('submit', function(e){
+		e.preventDefault();
+
+		if(newComment.value == ''){
+			alert('please fill out a full comment');	
+		}else{
+			var message = newComment.value;
+			createComment(message);	
+		
+			var form = document.forms.namedItem("commentForm");
+			var formData = new FormData(form);
+			var req = new XMLHttpRequest();
+			req.open("POST", "comments", true);
+			req.onload = function(event){
+				if(req.status == 200){
+					console.log("Uploaded!");
+				}else{
+					console.log("error" + req.status);
+				}
+			}
+			req.send(formData);
+		}
+		newComment.value = '';
+	});
+
+	comments.addEventListener('click', function(e){
+		e.preventDefault();
+		if(e.target.id == "reply-btn"){
+			createReplyInput(e.target);
+		}
+
+		if(e.target.id == "collapse-btn"){
+			collapseReplies(e.target);
+		}
+	});
+
+	function createComment(message){
+		var newLi = document.createElement('li');
+		var newComment = document.createElement('div');
+		var newProfileImage = document.createElement('div');
+		var newContext = document.createElement('p');
+		var newMenu = document.createElement('div');
+
+		newComment.className = "comment";
+		newProfileImage.className = "profileImage";
+		newMenu.className = "commentMenu";
+
+		newContext.innerText = message; 
+		newMenu.innerHTML = '<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn">[Reply]</a><a href="">[Report]</a>'
+
+		newComment.appendChild(newProfileImage);
+		newComment.appendChild(newContext);
+		newComment.appendChild(newMenu);
+
+		newLi.appendChild(newComment);
+
+		comments.insertBefore(newLi, comments.firstChild);
+	}
+
+	function createReplyInput(event){	
+		var newReply = document.createElement('div');
+		var newInput = document.createElement('textarea');
+		var newMenu = document.createElement('div');
+		var newSubmit = document.createElement('input');
+		var parentUl = event.parentNode.parentNode.parentNode;
+		var childUl = parentUl.querySelector('.replies');
+		var newLi = document.createElement('li');
+
+		newReply.className = "new-comment new-reply";
+		newInput.id = "new-comment";
+		newMenu.className = "commentMenu";
+		newSubmit.setAttribute("type", "submit");
+		newSubmit.setAttribute("id", "replyBtn");
+		newSubmit.setAttribute("value", "Post Reply");
+
+		newMenu.appendChild(newSubmit);
+		newInput.appendChild(newMenu);
+		newReply.appendChild(newInput);
+
+		newLi.appendChild(newReply);
+
+		childUl.insertBefore(newLi, childUl.firstChild);
+	}
+
+	function createReply(event){
+		var newUl = document.createElement('ul');
+		var newLi = document.createElement('li');
+		var newReply = document.createElement('div');
+		var newProfileImage = document.createElement('div');
+		var newContext = document.createElement('p');
+		var newMenu = document.createElement('div');
+
+		var parentUl = event.target.parentNode.parentNode.parentNode;
+		var childUl = parentUl.querySelector('.replies');
+
+		newUl.className = "replies";
+		newReply.className = "reply";
+		newProfileImage.className = "profileImage";
+		newMenu.className = "commentMenu";
+
+		newContext.innerText = "This is a reply of the .....";
+		newMenu.innerHTML = '<a href="">[Report]</a>';
+
+		newReply.appendChild(newProfileImage);
+		newReply.appendChild(newContext);
+		newReply.appendChild(newMenu);
+		
+		newLi.appendChild(newReply);
+		newUl.appendChild(newLi);
+
+		if(childUl){
+			childUl.appendChild(newLi);
+		}
+
+		if(!childUl){
+			parentUl.appendChild(newUl);
+		}
+
+	}
+
+	function collapseReplies(event){
+		var comment = event.target.parentNode.parentNode.parentNode;
+		var replies = comment.querySelector('.replies');
+
+		if(replies.style.display == "none"){
+			replies.style.display = "block";
+			event.target.innerText = "[ - ]";
+		}else{
+			replies.style.display = "none";
+			event.target.innerText = "[ + ]";
+		}
+
+
+		
+	}
+</script>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+
+{% extends "template.html" %}
+
+{% block message %}{{ messages }}{% endblock %}
+
+{% block profile %}{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block main %}
+<div class="form">
+	<img id="register" src="/images/profile_image.png">
+	<form name="registerForm" id="registerForm" action="" method="POST">
+		<div class="form-input">
+			<input type="text" name="username" placeholder="Enter Username" required>
+		</div>
+		<div class="form-input">
+			<input type="password" name="password" id="password" placeholder="Enter Password" required>
+		</div>
+		<div class="form-input">
+			<input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+		</div>
+		<div class="form-input">
+			<input type="email" name="email" placeholder="Enter Email (optional)">
+		</div>
+		<input class="btn-login" type="submit" name="register" value="Register Account">
+		<p>Forgot Password</p>
+
+	</form>
+</div>
+
+<script>
+	var form = document.getElementById("registerForm");
+
+	form.addEventListener('submit', function(e){
+		var password = document.getElementById("password").value;
+		var confirmPass = document.getElementById("confirmPassword").value;
+
+		if(password != confirmPass){
+			alert('you need to confirm you password');
+			e.preventDefault();
+		}
+
+	});
+
+</script>
+
+{% endblock %}

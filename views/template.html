@@ -1,0 +1,270 @@
+      <link rel="stylesheet" href="/style.css">
+      <link rel="stylesheet" href="/normalize.css">
+      <link rel="stylesheet" href="/nouislider.min.css">
+      <script src="https://apis.google.com/js/client.js?onload=onClientLoad" type="text/javascript">
+      </script>
+
+  </head>
+  
+  <body>
+    <div class="container">
+    <header>
+      <div class="bannerLogo"><a href="/"><img src="/images/spaurk_logo.png"></a></div>
+      <div class="bannerUser">
+        {% if isLogged %} 
+          <ul>
+          <li>
+						<div class="dropdown">
+							<div class="profile">
+								<a href="/p/{{ user }}"><img src="/images/profile_image.png" height="50px" width="50px"></a>
+							<div class="dropdown-content">
+									<a href="?Alternative">Alternative</a>
+									<a href="">Electronic</a>
+									<a href="">R&B</a>
+									<a href="">Pop</a>
+									<a href="">Rock</a>
+							</div>
+
+							</div>
+						</div>
+          </li>
+          <li>
+            <a href="/logout">logout</a>
+          </li>
+          </ul>
+        {% else %}
+          <span>Username:</span>
+          <span>Password:</span>
+          <form action="/login" method="post">
+            <input type="text" name="username" >
+            <input type="password" name="password" >
+            <div id="clear"></div>
+            <input type="submit" name="login" value="login" >
+            <a href="/register" id="register">register</a>
+          </form>
+        {% endif %} 
+        
+      </div>
+    </header>
+    <main>
+		{% block profile  %}
+		<div class="profileImage"></div>
+		<span class="profileName">{{ userProfile }}</span>
+		<div class="profileSocial">
+			<div id="sound-cloud"></div>
+			<div id="band-camp"></div>
+			<div id="twitter"></div>
+		</div>
+		<div class="aboutField"><p>between London’s musical tribes have always been porous. For Yussef Kamaal, the sound of the capital – with its hum of jungle, grime and broken beat – has shaped a self-taught, UK-tipped approach to playing jazz. In the states, the genre’s long-running to-and-fro with hip hop – from Robert Glasper to Kamasi Washington – has reimagined it within US culture. On Black Focus, Yussef Kamaal frame jazz inside the bass-saturated, pirate radio broadcasts of London. </p></div>
+		<div class="flashBanner"><p>Looking for a new Drummer and Singer</p></div>	
+		{% endblock %}
+		{% block nav %}
+		<nav>
+		<ul>
+			<li><a href="/p/{{ userProfile }}">Main</a></li>	
+			<li><a href="/p/{{ userProfile }}/watchlist">Watchlist</a></li>
+			<li><a href="/p/{{ userProfile }}/following">Following</a></li>
+			<li><a href="/p/{{ userProfile }}/comments">Comments</a></li>
+			<li><a href="/p/{{ userProfile }}/support">Support</a></li>
+		</ul>
+		</nav>
+		{% endblock %}
+    <div class="message"> 
+    {% block message %} {{ message }} {% endblock %}
+    </div>
+    {% block main %}
+		<div class="post" id="purple"> <!-- START OF POST -->
+			<div class="postHeader">
+				 <div class="postTitle">
+					<div class="postArtist"><a href="/id/{{ post._id }}">Artist Name</a></div>
+					<div class="postSong">This is the title of the song one more line</div>
+				</div>
+			</div>
+			<div class="postBody">
+				<div class="postContent">
+					<img src="/images/play_button.png">
+				</div> 
+			</div>
+			<div class="postFooter">
+					<div class="dropdown">	
+						<img src="/images/menu.png">
+						<div class="dropdown-content">
+								<a href="?Alternative">Alternative</a>
+								<a href="">Electronic</a>
+								<a href="">R&B</a>
+								<a href="">Pop</a>
+								<a href="">Rock</a>
+						</div>
+					</div>
+				<div class="postMenu">
+					<img src="/images/bookmark.png"><img src="/images/spaurk_icon.png"> 
+				</div>
+			</div>
+		</div> <!-- END OF POST -->
+      <div class="post" id="blue">
+        <div class="postHeader">
+				<div class="postTitle"></div>
+			</div>
+			<div class="postBody">
+				<div class="postContent">
+					<img src="/images/play_button.png">
+				</div> 
+			</div>
+			<div class="postFooter">
+					<div class="dropdown">	
+						<img src="/images/menu.png">
+						<div class="dropdown-content">
+								<a href="?Alternative">Alternative</a>
+								<a href="">Electronic</a>
+								<a href="">R&B</a>
+								<a href="">Pop</a>
+								<a href="">Rock</a>
+						</div>
+					</div>
+				<div class="postMenu">
+					<img src="/images/bookmark.png"><img src="/images/spaurk_icon.png"> 
+				</div>
+			</div>
+      </div>
+      <div class="post" id="red">
+       <div class="postHeader">
+				<div class="postTitle"></div>
+			</div>
+			<div class="postBody">
+				<div class="postContent">
+					<img src="/images/play_button.png">
+				</div> 
+			</div>
+			<div class="postFooter">
+					<div class="dropdown">	
+						<img src="/images/menu.png">
+						<div class="dropdown-content">
+								<a href="?Alternative">Alternative</a>
+								<a href="">Electronic</a>
+								<a href="">R&B</a>
+								<a href="">Pop</a>
+								<a href="">Rock</a>
+						</div>
+					</div>
+				<div class="postMenu">
+					<img src="/images/bookmark.png"><img src="/images/spaurk_icon.png"> 
+				</div>
+			</div>
+      </div>
+      <div class="post" id="yellow">
+        <div class="postHeader">
+				<div class="postTitle"></div>
+			</div>
+			<div class="postBody">
+				<div class="postContent">
+					<img src="/images/play_button.png">
+				</div> 
+			</div>
+			<div class="postFooter">
+					<div class="dropdown">	
+						<img src="/images/menu.png">
+						<div class="dropdown-content">
+								<a href="?Alternative">Alternative</a>
+								<a href="">Electronic</a>
+								<a href="">R&B</a>
+								<a href="">Pop</a>
+								<a href="">Rock</a>
+						</div>
+					</div>
+				<div class="postMenu">
+					<img src="/images/bookmark.png"><img src="/images/spaurk_icon.png"> 
+				</div>
+			</div>
+      </div>
+
+
+      <div class="post" id="green">
+        <div class="postHeader">
+				<div class="postTitle"></div>
+			</div>
+			<div class="postBody">
+				<div class="postContent">
+					<img src="/images/play_button.png">
+				</div> 
+			</div>
+			<div class="postFooter">
+					<div class="dropdown">	
+						<img src="/images/menu.png">
+						<div class="dropdown-content">
+								<a href="?Alternative">Alternative</a>
+								<a href="">Electronic</a>
+								<a href="">R&B</a>
+								<a href="">Pop</a>
+								<a href="">Rock</a>
+						</div>
+					</div>
+				<div class="postMenu">
+					<img src="/images/bookmark.png"><img src="/images/spaurk_icon.png"> 
+				</div>
+			</div>
+      </div>
+
+
+      <div class="post" id="blue">
+        <div class="postHeader">
+          <div class="postTitle"></div>
+        </div>
+        <div class="postBody"></div>
+        <div class="postFooter">
+          <div class="postTitle"><div class="content"></div></div>
+          <div class="postMenu"></div>
+        </div>
+      </div>
+      <div class="post" id="blue">
+        <div class="postHeader">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+        <div class="postBody"></div>
+        <div class="postFooter">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+      </div>
+      <div class="post" id="yellow">
+        <div class="postHeader">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+        <div class="postBody"></div>
+        <div class="postFooter">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+      </div>
+      <div class="post" id="red">
+        <div class="postHeader">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+        <div class="postBody"></div>
+        <div class="postFooter">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+      </div>
+      <div class="post" id="blue">
+        <div class="postHeader">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+        <div class="postBody"></div>
+        <div class="postFooter">
+          <div class="postTitle"></div>
+          <div class="postMenu"></div>
+        </div>
+      </div>
+
+
+    {% endblock %}
+    </main>
+    <footer></footer>
+    </div>
+    <p>Copyright 2016 spaurk.net all rights reserved</p>
+  </body>
+</html>
