@@ -536,10 +536,16 @@ span#start, span#stop{
 }
 
 .new-reply{
-	display: block;
+	float: right;
+}
+
+.new-reply #replyBtn{
+	float: right;
 }
 
 .new-reply textarea{
+	width: 500px;
+	height: 158px;
 	display: block;
 }
 
@@ -552,12 +558,8 @@ span#start, span#stop{
 
 #submit-btn{
 	position: absolute;
-	right: 2px;;
+	right: 2px;
 	bottom: 5px;
-}
-
-#replyBtn{
-
 }
 
 .comment-form{

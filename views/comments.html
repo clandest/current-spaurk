@@ -19,7 +19,7 @@
 			<div class="profileImage"></div>
 			<p>This is a comment. I wonder if it cant have replies</p>
 			<div class="commentMenu">
-				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn">[Reply]</a><a href="">[Report]</a>
+				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn" data-reply="0">[Reply]</a><a href="">[Report]</a>
 			</div>
 		</div>
 		<ul class="replies">
@@ -39,7 +39,7 @@
 			<div class="profileImage"></div>
 			<p>This is a comment. I wonder if it cant have replies</p>
 			<div class="commentMenu">
-				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn">[Reply]</a><a href="">[Report]</a>
+				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn" data-reply="0">[Reply]</a><a href="">[Report]</a>
 			</div>
 		</div>
 	</li>
@@ -79,7 +79,14 @@
 	comments.addEventListener('click', function(e){
 		e.preventDefault();
 		if(e.target.id == "reply-btn"){
-			createReplyInput(e.target);
+			if(e.target.dataset.reply == "0"){
+				createReplyInput(e.target);
+				e.target.dataset.reply = "1";
+			}else{
+				removeReplyInput(e.target);
+				e.target.dataset.reply = "0";
+				console.log("poop");
+			}
 		}
 
 		if(e.target.id == "collapse-btn"){
@@ -99,7 +106,7 @@
 		newMenu.className = "commentMenu";
 
 		newContext.innerText = message; 
-		newMenu.innerHTML = '<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn">[Reply]</a><a href="">[Report]</a>'
+		newMenu.innerHTML = '<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn" data-reply="0">[Reply]</a><a href="">[Report]</a>'
 
 		newComment.appendChild(newProfileImage);
 		newComment.appendChild(newContext);
@@ -112,27 +119,49 @@
 
 	function createReplyInput(event){	
 		var newReply = document.createElement('div');
+		var newForm = document.createElement('form');
 		var newInput = document.createElement('textarea');
 		var newMenu = document.createElement('div');
 		var newSubmit = document.createElement('input');
 		var parentUl = event.parentNode.parentNode.parentNode;
 		var childUl = parentUl.querySelector('.replies');
+		var newUl = document.createElement('ul');
 		var newLi = document.createElement('li');
 
-		newReply.className = "new-comment new-reply";
-		newInput.id = "new-comment";
+		newReply.className = "new-reply";
+		newForm.setAttribute("name", "newReply");
+		newForm.setAttribute("id", "newReply");
+		newForm.setAttribute("action", "?reply");
+		newForm.setAttribute("method", "POST");
 		newMenu.className = "commentMenu";
+		newInput.setAttribute("name", "newReply");
+		newInput.setAttribute("id", "new-reply");
+		newInput.setAttribute("form", "newReply");
 		newSubmit.setAttribute("type", "submit");
 		newSubmit.setAttribute("id", "replyBtn");
 		newSubmit.setAttribute("value", "Post Reply");
+		newUl.className = "replies";
 
-		newMenu.appendChild(newSubmit);
-		newInput.appendChild(newMenu);
 		newReply.appendChild(newInput);
+		newReply.appendChild(newSubmit);
+		newForm.appendChild(newReply);
 
-		newLi.appendChild(newReply);
+		newLi.appendChild(newForm);
+		newUl.appendChild(newLi);
 
-		childUl.insertBefore(newLi, childUl.firstChild);
+		if(childUl){
+			childUl.insertBefore(newLi, childUl.firstChild);
+		}
+
+		if(!childUl){
+			parentUl.appendChild(newUl);
+		}
+	}
+
+	function removeReplyInput(event){
+		var parentUl = event.parentNode.parentNode.parentNode;
+		var replyInput = document.querySelector('#newReply');
+		replyInput.remove();
 	}
 
 	function createReply(event){
@@ -172,7 +201,7 @@
 	}
 
 	function collapseReplies(event){
-		var comment = event.target.parentNode.parentNode.parentNode;
+		var comment = event.parentNode.parentNode.parentNode;
 		var replies = comment.querySelector('.replies');
 
 		if(replies.style.display == "none"){
