@@ -1,4 +1,5 @@
 
+
 {% extends "template.html" %}
 
 {% block message %}{{ messages }}{% endblock %}
@@ -47,7 +48,7 @@
 
 <form name="uploadForm" action="" method="POST" enctype="multipart/form-data">
 <input type="file" id="fileElem" name="fileElem" accept="audio/*" style="display:none" onchange="handleFile(this.files)" require>
-<input type="file" id="imageElem" name="imageElem" accept="audio/*" style="display:none" onchange="handleImage(this.files)">
+<input type="file" id="imageElem" name="imageElem" accept="image/*" style="display:none" onchange="handleImage(this.files)">
 <audio id="audio" autoplay="false" data-isPlaying="0"></audio>
 
 	<div class="form-upload">
@@ -135,6 +136,10 @@
 
 window.URL = window.URL || window.webkitURL;
 
+	var preview = document.querySelector(".upload-form");
+	var fileImage;
+	var fileMP3;
+
 	var slider = document.getElementById("seekSlider");
 	noUiSlider.create(slider, {
 			start: 0,
@@ -144,10 +149,6 @@ window.URL = window.URL || window.webkitURL;
 			},
 			step: 1,
 	});
-
-
-	var preview = document.querySelector(".upload-form");
-	var albumImage;
 
 	preview.addEventListener('click', function(e){
 		if(e.target.id == "playBtn"){
@@ -159,6 +160,15 @@ window.URL = window.URL || window.webkitURL;
 
 			if(fileElem)
 				fileElem.click();
+
+			e.preventDefault();
+		}
+
+		if(e.target.id == "imageSelect"){
+			var imageElem = document.getElementById("imageElem");
+
+			if(imageElem)
+				imageElem.click();
 
 			e.preventDefault();
 		}
@@ -216,6 +226,23 @@ function handleFile(file){
 	}
 }
 
+function handleImage(file){
+	var imageList = document.getElementById("imageList");
+
+	if(!file.length){
+		imageList.innerHTML = "<p>No image selected</p>";
+	}else{
+		imageList.innerHTML = "<p>" + file[0].name +  "</p>";
+		var image = document.getElementById("albumImage");
+		var url = window.URL.createObjectURL(file[0]);
+		image.style.backgroundImage = "url(" + image + ")";
+		image.style.backgroundRepeat = "no-repeat";
+		image.style.backgroundSize = "180px 146px";
+
+		fileImage = url; 
+	}
+}
+
 function showMetaData(data){
 	musicmetadata(data, function(err, result){
 		if(err)
@@ -233,7 +260,7 @@ function showMetaData(data){
 			image.style.backgroundRepeat = "no-repeat";
 			image.style.backgroundSize = "180px 146px";
 
-			albumImage = url;
+			fileImage = url;
 
 		}else{
 			imageList.innerHTML = "<p>Pulling the album image isn't supported, please select an (album)Image</p>"	
