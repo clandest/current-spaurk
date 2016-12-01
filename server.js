@@ -13,8 +13,8 @@ var bodyParser			= require('body-parser'),
 
 //configure db
 var configDB = require(__dirname + '/config/database.js');
-mongoose.connect(configDB.url);
-//mongoose.connect('mongodb://devyn:password@ds161505.mlab.com:61505/spaurk');
+//mongoose.connect(configDB.url);
+mongoose.connect('mongodb://devyn:password@ds161505.mlab.com:61505/spaurk');
 
 //configure sesion
 app.use(session({
