@@ -9,3 +9,111 @@
 	{% include "partials/_mainMenu.html" %}
 {% endblock %}
 
+{% block main %}
+<div id="posts">
+{% for post in posts %}
+<div class="post" id="purple"> <!-- START OF POST -->
+	<audio src="/uploads/{{ post.audioFile }}" id="audio{{ post._id }}" data-isPlaying="0" data-start="{{ post.start }}" data-stop="{{ post.stop }}"></audio>
+	<div class="postHeader">
+		<div class="postTitle">
+			<div class="postArtist"><a href="/id/{{ post._id }}">{{ post.artist }}</a></div>
+			<div class="postSong">{{ post.title | truncate(40) }}</div>
+		</div>
+	</div>
+	<div class="postBody" id="albumImage-{{ post._id }}" {% if post.imageFile %}style="background-image: url(/uploads/{{ post.imageFile }}); background-size: 180px 146px" {% endif %}>
+		<div class="postContent">
+			<span id="playTime-{{ post._id }}"><span id="start">0:00</span>/<span id="stop">0:00</span></span>
+			<span id="playBtn" class="play" data-id="{{ post._id }}"></span>
+			<div class="postTags" id="postTags-{{ post._id }}">
+				<span>{{ post.tags }}</span>
+			</div>
+		</div> 
+	</div>
+	<div class="postFooter">
+		<div class="dropdown">	
+			<img src="/images/menu.png">
+			<div class="dropdown-content">
+				<a href="?Alternative">Alternative</a>
+				<a href="">Electronic</a>
+				<a href="">R&B</a>
+				<a href="">Pop</a>
+				<a href="">Rock</a>
+			</div>
+		</div>
+		<div class="postMenu">
+			<img src="/images/bookmark.png"><img src="/images/spaurk_icon.png"> 
+		</div>
+	</div>
+</div> <!-- END OF POST -->
+
+{% endfor %}
+</div>
+
+<script>
+	var posts = document.querySelectorAll("#playBtn");
+
+	posts.forEach(function(post, i){
+		var audio = document.getElementById("audio" + post.getAttribute("data-id"));
+		var album = document.getElementById("albumImage-" + post.getAttribute("data-id"));
+		var tags = document.getElementById("postTags-" + post.getAttribute("data-id"));
+		var time = document.getElementById("playTime-" + post.getAttribute("data-id"));
+		var albumImages = [];
+		albumImages[i] = album.style.backgroundImage;
+		post.onclick = function(){
+			playPause(post, audio, tags, album, time, albumImages[i]);
+		}
+
+		post.onmouseover = function(){
+			showAlbumMouseOver(audio, tags, album, time, albumImages[i]);	
+		}
+
+		post.onmouseleave = function(){
+			showTagsMouseOut(audio, tags, album, time, albumImages[i]);
+		}
+	});
+
+function playPause(post, audio, tags, album, time, albumImages){
+	if(post.className == "play"){
+		post.className = "pause";
+		if(audio.src){
+			audio.play();
+			audio.setAttribute("data-isPlaying", "1");
+			showAlbum(tags, album, time, albumImages);
+		}
+	}else{
+		post.className = "play";
+		audio.pause();
+		audio.setAttribute("data-isPlaying", "0");
+		showTags(tags, album, time);
+	}
+}
+
+function showAlbum(postTags, postImage, playTime, albumImage){
+	postTags.style.visibility = "hidden";
+	if(albumImage)
+		postImage.style.backgroundImage = albumImage;
+	playTime.style.display = "block";
+}
+
+function showAlbumMouseOver(audio, postTags, postImage, playTime, albumImage){
+	var isPlayed = audio.getAttribute("data-isPlaying");
+	if(isPlayed == 0)
+		showAlbum(postTags, postImage, playTime, albumImage);
+}
+
+function showTags(postTags, postImage, playTime){
+	postTags.style.visibility = "visible";
+	postImage.style.backgroundImage = "none";
+	playTime.style.display = "none";
+}
+
+function showTagsMouseOut(audio, postTags, postImage, playTime, albumImage){
+	var isPlayed = audio.getAttribute("data-isPlaying");
+	if(isPlayed == 0)
+		showTags(postTags, postImage, playTime, albumImage);
+}
+
+</script>
+
+{% endblock %}
+

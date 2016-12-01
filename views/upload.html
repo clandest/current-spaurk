@@ -1,5 +1,4 @@
 
-
 {% extends "template.html" %}
 
 {% block message %}{{ messages }}{% endblock %}
@@ -382,7 +381,7 @@ function setPreviewDuration(audio){
 
 function showAlbum(){
 	document.getElementById("postTags").style.visibility = "hidden";
-	if(albumImage)
+	if(fileImage)
 		document.getElementById("albumImage").style.backgroundImage = "url(" + albumImage + ")";
 	document.getElementById("playTime").style.display = "block";
 }

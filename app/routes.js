@@ -7,11 +7,17 @@ var Post = models.Post;
 module.exports = function(app, upload){
 
 	app.get('/', function(req, res){
-		res.render('index.html', {
-			title: 'Spaurk.net',
-			messages: req.flash('alert'),
-			user: req.session.user,
-			isLogged: req.session.isLogged
+		Post.find({}).populate('_user').exec(function(err, allPosts){
+			if(!err){
+				res.render('index.html', {
+					posts: allPosts,
+					title: 'Spaurk.net',
+					isLogged: req.session.isLogged,
+					user: req.session.user,
+					messages: req.flash('alert')
+				});
+			}else
+				return done(err);
 		});
 	});
 
@@ -86,6 +92,39 @@ module.exports = function(app, upload){
 				isLogged: req.session.isLogged
 			});
 		}
+	});
+
+	var manageUpload = upload.fields([{ name: 'fileElem', maxCount: 1 }, { name: 'imageElem', maxCount: 1 } ]);
+	app.post('/upload', manageUpload, function(req, res){
+		var post = new Post();
+
+		User.findOne({ username: req.session.user }, function(err, newUser){
+			if(err) 
+				throw err;
+
+			post.audioFile = req.files['fileElem'][0].filename;
+
+			if(typeof req.files['imageElem'] !== "undefined")
+				post.imageFile = req.files['imageElem'][0].filename;
+
+			post._user = newUser._id;
+			post.title = req.body.title;
+			post.artist = req.body.artist;
+			post.start = req.body.start;
+			post.stop = req.body.stop;
+			post.genre = req.body.genre;
+			post.tags = req.body.tags;
+			
+			post.save(function(err, newPost){
+				if(err)
+					console.log(err);
+				if(newPost){
+					req.flash('alert', 'succesfull upload');
+					res.redirect('/');
+				}
+			});
+
+		});
 	});
 
 	app.get('/p/:user', function(req, res){
