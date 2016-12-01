@@ -22,11 +22,13 @@
 	</div>
 	<div class="postBody" id="albumImage-{{ post._id }}" {% if post.imageFile %}style="background-image: url(/uploads/{{ post.imageFile }}); background-size: 180px 146px" {% endif %}>
 		<div class="postContent">
-			<span id="playTime-{{ post._id }}"><span id="start">0:00</span>/<span id="stop">0:00</span></span>
 			<span id="playBtn" class="play" data-id="{{ post._id }}"></span>
 			<div class="postTags" id="postTags-{{ post._id }}">
+				{% if post.tags != '' %}
 				<span>{{ post.tags }}</span>
+				{% endif %}
 			</div>
+			<div id="playTime-{{ post._id }}" class="playTime"><span id="start-{{ post._id }}" class="start">0:00</span>/<span id="stop-{{ post._id }}" class="stop">0:00</span></div>
 		</div> 
 	</div>
 	<div class="postFooter">
@@ -59,6 +61,9 @@
 		var time = document.getElementById("playTime-" + post.getAttribute("data-id"));
 		var albumImages = [];
 		albumImages[i] = album.style.backgroundImage;
+		audio.addEventListener("loadeddata", function(){
+			setPreviewDuration(audio, post.getAttribute("data-id"));
+		});
 		post.onclick = function(){
 			playPause(post, audio, tags, album, time, albumImages[i]);
 		}
@@ -79,6 +84,9 @@ function playPause(post, audio, tags, album, time, albumImages){
 			audio.play();
 			audio.setAttribute("data-isPlaying", "1");
 			showAlbum(tags, album, time, albumImages);
+			audio.ontimeupdate = function(){
+				setPreviewCurrentTime(audio, post.getAttribute("data-id"));
+			}
 		}
 	}else{
 		post.className = "play";
@@ -112,6 +120,46 @@ function showTagsMouseOut(audio, postTags, postImage, playTime, albumImage){
 	if(isPlayed == 0)
 		showTags(postTags, postImage, playTime, albumImage);
 }
+
+function setPreviewCurrentTime(audio, id){
+	var start = document.getElementById("start-" + id);
+
+	start.innerText = convertSecondsToString(audio.currentTime);
+}
+
+function setPreviewDuration(audio, id){
+	var stop = document.getElementById("stop-" + id);
+
+	stop.innerText = convertSecondsToString(audio.duration);
+}
+
+function padTimer(time, padding){
+	var oldTime = "" + time;
+	var pad = padding;
+	return pad.substring(0, pad.length - oldTime.length) + oldTime;
+}
+
+function convertSecondsToString(seconds){
+	var min = Math.floor(seconds / 60);
+	var sec = Math.floor(seconds - min * 60);
+
+	sec = padTimer(sec, "00");
+
+	return min + ":" + sec;
+}
+
+function convertStringToSeconds(str){
+	var result = str.split(":");
+	var min = parseInt(result[0], 10);
+	var sec = parseInt(result[1], 10);
+
+	var newMin = min * 60;
+	var newSec = newMin + sec;
+	var newTime = newSec;
+
+	return newTime;
+}
+
 
 </script>
 

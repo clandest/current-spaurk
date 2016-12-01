@@ -250,12 +250,15 @@ footer{
     left: 75px;
 }
 
-#playTime{
+.playTime{
 	position: absolute;
-	padding: 3px;
 	bottom: 0;
 	left: 55px;
 	display: none;
+}
+
+span.start, span.stop{
+	display: inline;
 }
 
 .postContent #playBtn{
