@@ -3,10 +3,11 @@ models = require(__dirname + '/models/user');
 
 var User = models.User;
 var Post = models.Post;
+var fs = require('fs');
 
 module.exports = function(app, upload){
 
-	app.get('/', function(req, res){
+	app.get('/', function(req, res, done){
 		Post.find({}).populate('_user').exec(function(err, allPosts){
 			if(!err){
 				res.render('index.html', {
@@ -18,6 +19,24 @@ module.exports = function(app, upload){
 				});
 			}else
 				return done(err);
+		});
+	});
+
+	app.get('/id/:id', function(req, res, done){
+		Post.findById(req.params.id, function(err, post){
+			if(err)
+				return done(err);
+			if(!post)
+				return res.send(404);
+
+			post.remove(function(err){
+				if(err)
+					return done(err);
+				fs.unlink('views/static/uploads/' + post.audioFile);
+				if(typeof post.imageFile != 'undefined')
+					fs.unlink('views/static/uploads/' + post.imageFile);
+				res.redirect('/');
+			});
 		});
 	});
 
