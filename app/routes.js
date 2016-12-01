@@ -116,11 +116,13 @@ module.exports = function(app, upload){
 	var manageUpload = upload.fields([{ name: 'fileElem', maxCount: 1 }, { name: 'imageElem', maxCount: 1 } ]);
 	app.post('/upload', manageUpload, function(req, res){
 		var post = new Post();
+		var query = req.query;
 
 		User.findOne({ username: req.session.user }, function(err, newUser){
 			if(err) 
 				throw err;
 
+			console.log(req.body.categoryList);
 			post.audioFile = req.files['fileElem'][0].filename;
 
 			if(typeof req.files['imageElem'] !== "undefined")
@@ -133,6 +135,7 @@ module.exports = function(app, upload){
 			post.stop = req.body.stop;
 			post.genre = req.body.genre;
 			post.tags = req.body.tags;
+			post.category = req.body.categoryList;
 			
 			post.save(function(err, newPost){
 				if(err)

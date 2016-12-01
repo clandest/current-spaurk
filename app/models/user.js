@@ -35,7 +35,8 @@ var postSchema = new mongoose.Schema({
 	start: { type: String, required: true },
 	stop: { type: String, required: true },
 	genre: { type: String, required: true },
-	tags: [{ type: String }]
+	tags: [{ type: String }],
+	category: { type: String, default: 'Discover' }
 
 });
 
