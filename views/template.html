@@ -48,15 +48,21 @@
     </header>
     <main>
 		{% block profile  %}
-    <div class="profileImage"><img src="/uploads/{{ profileImage }}" height="100px" width="100px"></div>
+	<form name="profileForm" id="profileForm" action="" method="POST" enctype="multipart/form-data">
+	<input type="file" id="imageElem" name="image" accept="image/*" style="display:none" onchange="handleImage(this.files)">
+  <input type="text" id="aboutElem" name="about" style="display:none" onchange="handleInput(this.value)">
+  <input type="text" id="flashBannerElem" name="flashBanner"  style="display:none" onchange="handleInput(this.value)">
+  </form>
+
+    <div class="profileImage"><img id="profileImage" src="/uploads/{{ profileImage }}" height="100px" width="100px"></div>
 		<span class="profileName">{{ userProfile }}</span>
 		<div class="profileSocial">
 			<div id="sound-cloud"></div>
 			<div id="band-camp"></div>
 			<div id="twitter"></div>
 		</div>
-		<div class="aboutField"><p>between London’s musical tribes have always been porous. For Yussef Kamaal, the sound of the capital – with its hum of jungle, grime and broken beat – has shaped a self-taught, UK-tipped approach to playing jazz. In the states, the genre’s long-running to-and-fro with hip hop – from Robert Glasper to Kamasi Washington – has reimagined it within US culture. On Black Focus, Yussef Kamaal frame jazz inside the bass-saturated, pirate radio broadcasts of London. </p></div>
-		<div class="flashBanner"><p>Looking for a new Drummer and Singer</p></div>	
+		<div class="aboutField" id="about" data-token="0"><p id="aboutContext">between London’s musical tribes have always been porous. For Yussef Kamaal, the sound of the capital – with its hum of jungle, grime and broken beat – has shaped a self-taught, UK-tipped approach to playing jazz. In the states, the genre’s long-running to-and-fro with hip hop – from Robert Glasper to Kamasi Washington – has reimagined it within US culture. On Black Focus, Yussef Kamaal frame jazz inside the bass-saturated, pirate radio broadcasts of London. </p></div>
+		<div class="flashBanner" id="flashBanner" data-token="0"><p id="flashBannerContext">Looking for a new Drummer and Singer</p></div>	
 		{% endblock %}
 		{% block nav %}
 		<nav>
@@ -266,5 +272,9 @@
     <footer></footer>
     </div>
     <p>Copyright 2016 spaurk.net all rights reserved</p>
+
+{% block scripts %}
+{% endblock %}
+
   </body>
 </html>
