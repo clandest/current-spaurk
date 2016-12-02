@@ -9,8 +9,10 @@
 
 {% block main %}
 <div class="form">
-	<img id="register" src="/images/profile_image.png">
-	<form name="registerForm" id="registerForm" action="" method="POST">
+	<img id="profileImage" src="/images/profile_image.png" height="100px" width="100px">
+	<form name="registerForm" id="registerForm" action="" method="POST" enctype="multipart/form-data">
+	<input type="file" id="imageElem" name="image" accept="image/*" style="display:none" onchange="handleImage(this.files)">
+
 		<div class="form-input">
 			<input type="text" name="username" placeholder="Enter Username" required>
 		</div>
@@ -31,6 +33,15 @@
 
 <script>
 	var form = document.getElementById("registerForm");
+	var profileImage = document.getElementById("profileImage");
+
+
+	profileImage.addEventListener('click', function(e){
+		var imageElem = document.getElementById("imageElem");
+
+		imageElem.click();	
+
+	});
 
 	form.addEventListener('submit', function(e){
 		var password = document.getElementById("password").value;
@@ -42,6 +53,12 @@
 		}
 
 	});
+
+function handleImage(file){
+		var url = window.URL.createObjectURL(file[0]);
+		profileImage.src=url;
+}
+
 
 </script>
 

@@ -16,7 +16,7 @@
           <li>
 						<div class="dropdown">
 							<div class="profile">
-								<a href="/p/{{ user }}"><img src="/images/profile_image.png" height="50px" width="50px"></a>
+                <a href="/p/{{ user }}"><img src="/uploads/{{ accountImage }}" height="50px" width="50px"></a>
 							<div class="dropdown-content">
 									<a href="?Alternative">Alternative</a>
 									<a href="">Electronic</a>
@@ -48,7 +48,7 @@
     </header>
     <main>
 		{% block profile  %}
-		<div class="profileImage"></div>
+    <div class="profileImage"><img src="/uploads/{{ profileImage }}" height="100px" width="100px"></div>
 		<span class="profileName">{{ userProfile }}</span>
 		<div class="profileSocial">
 			<div id="sound-cloud"></div>

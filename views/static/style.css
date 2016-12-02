@@ -372,7 +372,6 @@ span.start, span.stop{
 .profileImage{
     width: 100px;
     height: 100px;
-		background-image: url("/images/profile_image.png");
     margin: 0 auto;
 		margin-bottom: 5px;
 }
@@ -454,7 +453,7 @@ span.start, span.stop{
 	padding-top: 180px;
 }
 
-.form img#register{
+.form img#profileImage{
 	margin-top: -60px;
 	margin-bottom: 25px;
 }

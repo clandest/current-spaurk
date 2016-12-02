@@ -15,6 +15,7 @@ module.exports = function(app, upload){
 					title: 'Spaurk.net',
 					isLogged: req.session.isLogged,
 					user: req.session.user,
+					accountImage: req.session.accountImage,
 					messages: req.flash('alert')
 				});
 			}else
@@ -50,6 +51,7 @@ module.exports = function(app, upload){
 			if(user && user.validPassword(password) == true){
 				req.session.regenerate(function(){
 					req.session.user = user.username;
+					req.session.accountImage = user.profileImage;
 					req.session.isLogged = true;
 					res.redirect('/');
 				});
@@ -73,15 +75,17 @@ module.exports = function(app, upload){
 		});
 	});
 
-	app.post('/register', function(req, res){
+	app.post('/register', upload.single('image'), function(req, res){
 		var password = req.body.password;
 		var username = req.body.username;
+		var profileImage = req.file.filename; 
 		var email = req.body.email;
 		var date = new Date();
 		var user = new User();
 
 		user.username = username;
 		user.password = user.generateHash(password);
+		user.profileImage = profileImage;
 		user.email    = email;
 		user.created_at = date;
 
@@ -91,8 +95,8 @@ module.exports = function(app, upload){
 			if(newUser){
 				req.session.regenerate(function(){
 					req.session.user = newUser.username;
+					req.session.accountImage = newUser.profileImage;
 					req.session.isLogged = true;
-					console.log(req.session.user);
 					res.redirect('/');
 				});
 			}
@@ -108,6 +112,7 @@ module.exports = function(app, upload){
 				title: 'New Upload',
 				messages: req.flash('alert'),
 				user: req.session.user,
+				accountImage: req.session.accountImage,
 				isLogged: req.session.isLogged
 			});
 		}
@@ -150,42 +155,58 @@ module.exports = function(app, upload){
 	});
 
 	app.get('/p/:user', function(req, res){
-		res.render('profile.html', {
-			title: req.params.user + ' Profile',
-			messages: req.flash('alert'),
-			user: req.session.user,
-			isLogged: req.session.isLogged,
-			userProfile: req.params.user
+		User.findOne({ username: req.params.user }, function(err, profileUser){
+			res.render('profile.html', {
+				title: req.params.user + ' Profile',
+				messages: req.flash('alert'),
+				user: req.session.user,
+				accountImage: req.session.accountImage,
+				profileImage: profileUser.profileImage,
+				isLogged: req.session.isLogged,
+				userProfile: req.params.user
+			});
 		});
 	});
 
 	app.get('/p/:user/watchlist', function(req, res){
-		res.render('watchlist.html', {
+		User.findOne({ username: req.params.user }, function(err, profileUser){
+			res.render('watchlist.html', {
 				title: req.params.user + ' Watchlist',
-				message: req.flash('alert'),
+				messages: req.flash('alert'),
 				user: req.session.user,
+				accountImage: req.session.accountImage,
+				profileImage: profileUser.profileImage,
 				isLogged: req.session.isLogged,
 				userProfile: req.params.user
+			});
 		});
 	});
 
 	app.get('/p/:user/following', function(req, res){
-		res.render('following.html', {
+		User.findOne({ username: req.params.user }, function(err, profileUser){
+			res.render('following.html', {
 				title: req.params.user + ' Following',
-				message: req.flash('alert'),
+				messages: req.flash('alert'),
 				user: req.session.user,
+				accountImage: req.session.accountImage,
+				profileImage: profileUser.profileImage,
 				isLogged: req.session.isLogged,
 				userProfile: req.params.user
+			});
 		});
 	});
 
 	app.get('/p/:user/comments', function(req, res){
-		res.render('comments.html', {
+		User.findOne({ username: req.params.user }, function(err, profileUser){
+			res.render('comments.html', {
 				title: req.params.user + ' Comments',
-				message: req.flash('alert'),
+				messages: req.flash('alert'),
 				user: req.session.user,
+				accountImage: req.session.accountImage,
+				profileImage: profileUser.profileImage,
 				isLogged: req.session.isLogged,
 				userProfile: req.params.user
+			});
 		});
 	});
 
@@ -194,13 +215,17 @@ module.exports = function(app, upload){
 	});
 
 	app.get('/p/:user/support', function(req, res){
-		res.render('support.html', {
+		User.findOne({ username: req.params.user }, function(err, profileUser){
+			res.render('support.html', {
 				title: req.params.user + ' Support',
-				message: req.flash('alert'),
+				messages: req.flash('alert'),
 				user: req.session.user,
+				accountImage: req.session.accountImage,
+				profileImage: profileUser.profileImage,
 				isLogged: req.session.isLogged,
 				userProfile: req.params.user
+			});
 		});
 	});
-
+	
 };
