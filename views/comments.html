@@ -97,7 +97,6 @@
 		if(e.target.id == "postReply"){
 			var message = document.getElementById("new-reply").value;
 			var parentUl = e.target.parentNode.parentNode.parentNode.parentNode.parentNode;
-			console.log(parentUl);
 			createReply(parentUl, message);
 			removeReplyInput();
 			
