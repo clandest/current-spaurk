@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 var userSchema = new mongoose.Schema({
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
+	profileImage: { type: String, default: 'defaultProfile.png' },
 	email:  String,
 	created_at: Date,
 	updated_at: Date,

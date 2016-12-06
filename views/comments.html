@@ -13,7 +13,7 @@
 	</div>
 </form>
 <div class="comments" id="comments">
-<ul id="commentsList">
+<ul id="commentsList" data-replying="0">
 	<li>
 		<div class="comment">
 			<div class="profileImage"></div>
@@ -79,18 +79,27 @@
 	comments.addEventListener('click', function(e){
 		e.preventDefault();
 		if(e.target.id == "reply-btn"){
-			if(e.target.dataset.reply == "0"){
+			var commentsList = document.getElementById("commentsList");
+			if(commentsList.dataset.replying == "0"){
+				var replying = document.querySelector(".replying");
 				createReplyInput(e.target);
-				e.target.dataset.reply = "1";
+				commentsList.dataset.replying = "1";
 			}else{
-				removeReplyInput(e.target);
-				e.target.dataset.reply = "0";
-				console.log("poop");
+				removeReplyInput();
+				commentsList.dataset.replying = "0";
 			}
 		}
 
 		if(e.target.id == "collapse-btn"){
 			collapseReplies(e.target);
+		}
+
+		if(e.target.id == "postReply"){
+			var message = document.getElementById("new-reply").value;
+			var parentUl = e.target.parentNode.parentNode.parentNode.parentNode.parentNode;
+			createReply(parentUl, message);
+			removeReplyInput();
+			
 		}
 	});
 
@@ -138,9 +147,10 @@
 		newInput.setAttribute("id", "new-reply");
 		newInput.setAttribute("form", "newReply");
 		newSubmit.setAttribute("type", "submit");
-		newSubmit.setAttribute("id", "replyBtn");
+		newSubmit.setAttribute("id", "postReply");
 		newSubmit.setAttribute("value", "Post Reply");
 		newUl.className = "replies";
+		newLi.className= "replying";
 
 		newReply.appendChild(newInput);
 		newReply.appendChild(newSubmit);
@@ -158,13 +168,14 @@
 		}
 	}
 
-	function removeReplyInput(event){
-		var parentUl = event.parentNode.parentNode.parentNode;
-		var replyInput = document.querySelector('#newReply');
+	function removeReplyInput(){
+		var commentsList = document.getElementById("commentsList");
+		var replyInput = document.querySelector('.replying');
+		commentsList.dataset.replying = "0";
 		replyInput.remove();
 	}
 
-	function createReply(event){
+	function createReply(event, message){
 		var newUl = document.createElement('ul');
 		var newLi = document.createElement('li');
 		var newReply = document.createElement('div');
@@ -172,7 +183,7 @@
 		var newContext = document.createElement('p');
 		var newMenu = document.createElement('div');
 
-		var parentUl = event.target.parentNode.parentNode.parentNode;
+		var parentUl = event;
 		var childUl = parentUl.querySelector('.replies');
 
 		newUl.className = "replies";
@@ -180,7 +191,7 @@
 		newProfileImage.className = "profileImage";
 		newMenu.className = "commentMenu";
 
-		newContext.innerText = "This is a reply of the .....";
+		newContext.innerText = message;
 		newMenu.innerHTML = '<a href="">[Report]</a>';
 
 		newReply.appendChild(newProfileImage);
@@ -216,5 +227,10 @@
 		
 	}
 </script>
+{% endblock %}
+
+{% block scripts %}
+
+{% include "static/js/profile.js" %}
 
 {% endblock %}
