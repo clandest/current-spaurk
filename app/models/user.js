@@ -22,7 +22,15 @@ var profileSchema = new mongoose.Schema({
 });
 
 var profileCommentSchema = new mongoose.Schema({
-	_profile: [{ type: mongoose.Schema.ObjectId, ref: 'Profile' }],
+	_user: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+	_replies: [{ type: mongoose.Schema.ObjectId, ref: 'Reply' }],
+	body: { type: String, required: true },
+	created_at: Date,
+});
+
+var profileReplySchema = new mongoose.Schema({
+	_user: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+	_comments: [{ type: mongoose.Schema.ObjectId, ref: 'ProfileComment' }],
 	body: { type: String, required: true },
 	created_at: Date,
 });
@@ -52,11 +60,13 @@ userSchema.methods.validPassword = function(password, callback){
 var User = mongoose.model('User', userSchema);
 var Post = mongoose.model('Post', postSchema);
 var Profile = mongoose.model('Profile', profileSchema);
-var ProfileComment = mongoose.model('ProfileComment', postSchema); 
+var ProfileComment = mongoose.model('ProfileComment', profileCommentSchema); 
+var ProfileReply = mongoose.model('ProfileReply', profileReplySchema); 
 
 module.exports = {
     User: User,
     Post: Post,
 		Profile: Profile,
-		ProfileComment: ProfileComment
+		ProfileComment: ProfileComment,
+		ProfileReply: ProfileReply
 };

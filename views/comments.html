@@ -4,7 +4,7 @@
 {% block message %}{{ messages }}{% endblock %}
 
 {% block main %}
-<form name="commentForm" id="commentForm" action="/p/clandest/comments" method="POST">
+<form name="commentForm" id="commentForm" action="/p/clandest/comments" enctype="multipart/form-data" method="POST">
 	<div class="new-comment">
 			<textarea name="newComment" id="new-comment" form="commentForm"></textarea>
 		<div class="commentMenu">
@@ -59,21 +59,16 @@
 		}else{
 			var message = newComment.value;
 			createComment(message);	
-		
-			var form = document.forms.namedItem("commentForm");
-			var formData = new FormData(form);
+
+			var messageData = {};
+			messageData['newComment'] = message;
+
 			var req = new XMLHttpRequest();
 			req.open("POST", "comments", true);
-			req.onload = function(event){
-				if(req.status == 200){
-					console.log("Uploaded!");
-				}else{
-					console.log("error" + req.status);
-				}
-			}
-			req.send(formData);
+			req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+			req.send(JSON.stringify(messageData));
+			newComment.value = '';
 		}
-		newComment.value = '';
 	});
 
 	comments.addEventListener('click', function(e){
@@ -98,8 +93,19 @@
 			var message = document.getElementById("new-reply").value;
 			var parentUl = e.target.parentNode.parentNode.parentNode.parentNode.parentNode;
 			createReply(parentUl, message);
+
+			var messageData = {};
+			messageData['newReply'] = message;
+
+			var req = new XMLHttpRequest();
+			req.open("POST", "comments/reply", true);
+			req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+			req.send(JSON.stringify(messageData));
 			removeReplyInput();
-			
+			console.log(req.status);
+			req.onloadend = function(){
+				console.log("something happend");
+			}
 		}
 	});
 
@@ -140,8 +146,9 @@
 		newReply.className = "new-reply";
 		newForm.setAttribute("name", "newReply");
 		newForm.setAttribute("id", "newReply");
-		newForm.setAttribute("action", "?reply");
+		newForm.setAttribute("action", "");
 		newForm.setAttribute("method", "POST");
+		newForm.setAttribute("enctype", "multipart/form-data");
 		newMenu.className = "commentMenu";
 		newInput.setAttribute("name", "newReply");
 		newInput.setAttribute("id", "new-reply");

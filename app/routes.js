@@ -3,6 +3,8 @@ models = require(__dirname + '/models/user');
 
 var User = models.User;
 var Post = models.Post;
+var ProfileComment = models.ProfileComment;
+var ProfileReply = models.ProfileReply;
 var fs = require('fs');
 
 module.exports = function(app, upload){
@@ -78,7 +80,8 @@ module.exports = function(app, upload){
 	app.post('/register', upload.single('image'), function(req, res){
 		var password = req.body.password;
 		var username = req.body.username;
-		var profileImage = req.file.filename; 
+		if(req.file)
+			var profileImage = req.file.filename; 
 		var email = req.body.email;
 		var date = new Date();
 		var user = new User();
@@ -211,7 +214,52 @@ module.exports = function(app, upload){
 	});
 
 	app.post('/p/:user/comments', function(req, res){
-		console.log("ok");
+
+		User.findOne({ username: req.session.user }, function(err, commentUser){
+			if(err){
+				req.flash('alert', 'need to be logged in');
+				res.redirect('/');
+			}
+
+			var comment = new ProfileComment({
+				_user:  commentUser._id,	
+				body: req.body.newComment,
+				created_at: new Date()
+			});
+		
+			comment.save(function(err, newComment){
+				if(err)
+					throw err;
+				if(newComment)
+					console.log(newComment);
+			});
+
+		});
+	});
+
+	app.post('/p/:user/comments/reply', function(req, res){
+
+		User.findOne({ username: req.session.user }, function(err, replyUser){
+			if(err){
+				req.flash('alert', 'need to be logged in');
+				res.redirect('/');
+			}
+
+			var reply = new ProfileReply({
+				_user:  replyUser._id,	
+				body: req.body.newReply,
+				created_at: new Date()
+			});
+		
+			reply.save(function(err, newReply){
+				if(err)
+					throw err;
+				if(newReply)
+					console.log(newReply);
+			});
+
+		});
+
 	});
 
 	app.get('/p/:user/support', function(req, res){
