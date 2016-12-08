@@ -14,6 +14,7 @@ var userSchema = new mongoose.Schema({
 
 var profileSchema = new mongoose.Schema({
 	_user: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+	_comments: [{ type: mongoose.Schema.ObjectId, ref: 'ProfileComment' }],
 	about: String,
 	flashBanner: String,
 	profileImage: String,
@@ -23,7 +24,8 @@ var profileSchema = new mongoose.Schema({
 
 var profileCommentSchema = new mongoose.Schema({
 	_user: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-	_replies: [{ type: mongoose.Schema.ObjectId, ref: 'Reply' }],
+	_profile: [{ type: mongoose.Schema.ObjectId, ref: 'Profile' }],
+	_replies: [{ type: mongoose.Schema.ObjectId, ref: 'ProfileReply' }],
 	body: { type: String, required: true },
 	created_at: Date,
 });

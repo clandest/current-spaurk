@@ -12,37 +12,34 @@
 		</div>
 	</div>
 </form>
+
 <div class="comments" id="comments">
 <ul id="commentsList" data-replying="0">
+{% for comment in profileComments %}
 	<li>
-		<div class="comment">
-			<div class="profileImage"></div>
-			<p>This is a comment. I wonder if it cant have replies</p>
+		<div class="comment" data-id="{{ comment._id }}">
+			<div class="profileImage"><img src="/uploads/{{ comment._user[0].profileImage }}" width=50 height=50 title="{{ comment._user[0].username }}"></div>
+			<p>{{ comment.body }}</p>
 			<div class="commentMenu">
-				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn" data-reply="0">[Reply]</a><a href="">[Report]</a>
+				<a href="" id="collapse-btn">[ - ]</a>{% if user %}<a href="" id="reply-btn" data-reply="0">[Reply]</a><a href="">[Report]</a>{% endif %}
 			</div>
 		</div>
 		<ul class="replies">
+		{% for reply in comment._replies %}
 			<li>
-			<div class="reply">
-				<div class="profileImage"></div>
-				<p>This is a reply to a comment. I wonder if it will work</p>
+				<div class="reply" data-id="{{ reply._id }}">
+				<div class="profileImage"><img src="/uploads/{{ reply._user[0].profileImage }}" width=25 height=25></div>
+				<p>{{ reply.body }}</p>
 				<div class="commentMenu">
-					<a href="">[Report]</a>
+					{% if user %}<a href="">[Report]</a> {% endif %}
 				</div>
-			</div>
+				</div>
 			</li>
+		{% endfor %}
 		</ul>
 	</li>
-	<li>
-		<div class="comment">
-			<div class="profileImage"></div>
-			<p>This is a comment. I wonder if it cant have replies</p>
-			<div class="commentMenu">
-				<a href="" id="collapse-btn">[ - ]</a><a href="" id="reply-btn" data-reply="0">[Reply]</a><a href="">[Report]</a>
-			</div>
-		</div>
-	</li>
+{% endfor %}
+
 </ul>
 </div>
 <div class="clear"></div>
@@ -92,10 +89,11 @@
 		if(e.target.id == "postReply"){
 			var message = document.getElementById("new-reply").value;
 			var parentUl = e.target.parentNode.parentNode.parentNode.parentNode.parentNode;
-			createReply(parentUl, message);
+			var commentId = createReply(parentUl, message);
 
 			var messageData = {};
 			messageData['newReply'] = message;
+			messageData['commentId'] = commentId;
 
 			var req = new XMLHttpRequest();
 			req.open("POST", "comments/reply", true);
@@ -142,6 +140,7 @@
 		var childUl = parentUl.querySelector('.replies');
 		var newUl = document.createElement('ul');
 		var newLi = document.createElement('li');
+
 
 		newReply.className = "new-reply";
 		newForm.setAttribute("name", "newReply");
@@ -193,6 +192,9 @@
 		var parentUl = event;
 		var childUl = parentUl.querySelector('.replies');
 
+		var comment = parentUl.querySelector(".comment");
+		var commentId = comment.getAttribute("data-id");
+
 		newUl.className = "replies";
 		newReply.className = "reply";
 		newProfileImage.className = "profileImage";
@@ -210,10 +212,12 @@
 
 		if(childUl){
 			childUl.appendChild(newLi);
+			return(commentId);
 		}
 
 		if(!childUl){
 			parentUl.appendChild(newUl);
+			return(commentId);
 		}
 
 	}
